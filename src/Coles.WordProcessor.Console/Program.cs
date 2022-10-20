@@ -1,62 +1,44 @@
-﻿using System;
-using System.Text;
+﻿using Coles.WordProcessor.Helpers;
+using Coles.WordProcessor.Models;
+using Coles.WordProcessor.Services;
 
-namespace MyApp // Note: actual namespace depends on the project name.
+using static Coles.WordProcessor.Helpers.ConsoleUtil;
+using static Coles.WordProcessor.Helpers.Extensions;
+
+namespace Coles.WordProcessor;// Note: actual namespace depends on the project name.
+
+
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        var processor = Processor.New();
+
+        while(true)
         {
-            Console.WriteLine("Welcome to the WordProcessor!");
-            while(true)
-            {
-                Console.WriteLine($"{Environment.NewLine}{Environment.NewLine}");
-                Console.WriteLine("To start, please provide a sentence or a group of words - ");
+            Console.WriteLine("Welcome to the WordProcessor!\n");
+            Console.WriteLine("To start, please provide a sentence or a group of words - ");
 
-                var words = Console.ReadLine();
+            var words = FetchNonEmptyString();
 
-                Console.WriteLine($"What would you like to do with '{words}'?");
-                Console.WriteLine(" (1) Reverse the letters of words within the sentence");
-                Console.WriteLine(" (2) Detect if two sets of characters are anagrams");
-                Console.WriteLine(" (3) Remove the repeated elements of an array");
-                
-                var operation = ExtractSelection(Console.ReadLine(), "1", "2", "3");
+            Console.WriteLine($"\nWhat would you like to do with '{words}'?");
+            Console.WriteLine(OperationToString(Operation.ReverseWords));
+            Console.WriteLine(OperationToString(Operation.DetectAnagrams));
+            Console.WriteLine(OperationToString(Operation.RemoveRepeated));
+            
+            var operation = FetchValidSelection(Extensions.OperationFromString, "1", "2", "3");
 
-                Console.WriteLine($"Applying ({operation}) to : '{words}'");
+            Console.WriteLine($"Applying `{OperationToString(operation)}` to : {words}\n");
 
-                string outcome = Process(operation, words);
+            string outcome = processor.Process(operation, words);
 
-                Console.WriteLine($"Results to : {outcome}");
-                Console.WriteLine("Do you want to try again? (y/n)");
+            Console.WriteLine($"Results to : {outcome}\n");
 
-                var tryAgain = ExtractSelection(Console.ReadLine(), "y", "n");
-                
-                if (!StartAgain(tryAgain))
-                    return;
-            }
-        }
+            Console.WriteLine("Do you want to try again? [y/n]");
+            if (FetchValidSelection("y", "n") == "n")
+                return;
 
-        private static string Process(string? operation, string? words)
-        {
-            return "Yipee!";
-        }
-
-        private static bool StartAgain(string yesNo)
-        {
-            return yesNo == "y";
-        }
-
-        private static string ExtractSelection(string? input, params string[] selections)
-        {
-            if (input == null 
-                || (!(selections.Where(s => (input ?? string.Empty) == s).Any())))
-            {
-                
-                Console.WriteLine($"Please enter a valid choice from the following [{String.Join("/", selections)}] then pressing enter.");
-
-                return ExtractSelection(Console.ReadLine(), selections);
-            }
-            return input!;
+            Console.WriteLine("\n\n\n");
         }
     }
 }
