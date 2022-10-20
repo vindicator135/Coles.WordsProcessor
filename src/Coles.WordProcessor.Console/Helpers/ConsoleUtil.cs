@@ -19,10 +19,10 @@ public static class ConsoleUtil
         {
             var message = "Please provide a valid value";
             
-            if (selections.Count() < 0)
+            if (selections.Any())
                 message = $"Please enter a valid choice from the following [{String.Join("/", selections)}]";
 
-            Console.WriteLine($"Invalid input. {message} then pressing enter.");
+            Console.WriteLine($"Invalid input. {message} then press enter.");
 
             return FetchUserInput(Console.ReadLine(), parser, selections);
         }
